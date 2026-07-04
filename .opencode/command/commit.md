@@ -1,5 +1,5 @@
 ---
-description: Stage all changes and commit with an auto-generated conventional commit message.
+description: Stage all changes, commit with an auto-generated conventional commit message, and push.
 ---
 
 1. Run `git status` and `git diff --staged` and `git diff` to see all changes (staged and unstaged) in the working directory.
@@ -8,10 +8,10 @@ description: Stage all changes and commit with an auto-generated conventional co
    - Types: `feat`, `fix`, `refactor`, `style`, `docs`, `test`, `chore`, `perf`
    - Scope should reflect the file or area changed (e.g. `index`, `style`, `data`)
    - Description is a concise summary in imperative mood, lowercase, no period
-3. Show the user the generated commit message and ask for confirmation.
-4. If confirmed, execute:
+3. If the user provides extra context via `$ARGUMENTS`, incorporate it into the commit message as a body paragraph after a blank line.
+4. Execute:
    ```
    git add -A
    git commit -m "<generated-message>"
+   git push
    ```
-5. If the user provides extra context via `$ARGUMENTS`, incorporate it into the commit message as a body paragraph after a blank line.
