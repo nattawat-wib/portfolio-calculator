@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <script>
+    (function () {
+      var saved = localStorage.getItem('theme');
+      var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Calculator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background-color 0.2s, color 0.2s;
+      padding: 2rem 1rem;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Light mode (default) */
+    :root {
+      color-scheme: light;
+      --bg-primary: #ffffff;
+      --bg-secondary: #fdf6db;
+      --bg-tertiary: #faecc0;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6b6a66;
+      --text-tertiary: #9d9c98;
+      --border-primary: #e0ddd6;
+      --border-secondary: #d0ccbe;
+      --color-core: #1d9e75;
+      --color-sat: #e1ad01;
+      --color-danger: #e24b4a;
+      --color-success: #639922;
+      --status-ok-bg: #eaf3de;
+      --status-ok-text: #27500a;
+      --status-warn-bg: #fcebeb;
+      --status-warn-text: #791f1f;
+      --range-thumb-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      --range-thumb-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Dark mode (toggled via data-theme attribute) */
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #332b14;
+      --bg-tertiary: #463c1a;
+      --text-primary: #f5f5f5;
+      --text-secondary: #b0b0b0;
+      --text-tertiary: #808080;
+      --border-primary: #3d3d3d;
+      --border-secondary: #4d4d4d;
+      --status-ok-bg: #27500a;
+      --status-ok-text: #eaf3de;
+      --status-warn-bg: #791f1f;
+      --status-warn-text: #fcebeb;
+      --range-thumb-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      --range-thumb-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .theme-toggle {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--border-secondary);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .budget-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .budget-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .budget-input {
+      flex: 1;
+      min-width: 0;
+      font-size: 16px;
+      font-weight: 600;
+      border: 1px solid var(--border-secondary);
+      border-radius: 6px;
+      padding: 4px 8px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .budget-input:hover {
+      border-color: var(--color-sat);
+    }
+
+    .budget-input:focus {
+      border-color: var(--color-sat);
+    }
+
+    .slidercap-input {
+      flex: none;
+      width: 80px;
+      text-align: right;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric-card {
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-value {
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .metric-subvalue {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--border-primary);
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--color-core);
+      border-radius: 4px;
+      transition: width 0.2s ease;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .donut-wrapper {
+      text-align: center;
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .donut-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .donut-percent {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .donut-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .legend-text {
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-bar {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .status-ok {
+      background: var(--status-ok-bg);
+      color: var(--status-ok-text);
+    }
+
+    .status-warn {
+      background: var(--status-warn-bg);
+      color: var(--status-warn-text);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding-top: 1rem;
+    }
+
+    .section-header:first-child {
+      padding-top: 0;
+    }
+
+    .add-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .add-btn:hover {
+      border-color: var(--border-secondary);
+      background: var(--bg-tertiary);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-primary);
+      margin: 1.5rem 0;
+    }
+
+    .asset-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .subcat-block {
+      border: 2px solid var(--text-tertiary);
+      border-radius: 10px;
+      padding: 0.75rem;
+    }
+
+    .subcat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 0.75rem;
+    }
+
+    .subcat-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .subcat-label {
+      flex: 1;
+      min-width: 0;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: 1px solid var(--border-secondary);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      outline: none;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .subcat-label:hover,
+    .subcat-label:focus {
+      border-color: var(--color-sat);
+    }
+
+    .subcat-label:focus {
+      background: var(--bg-tertiary);
+    }
+
+    .subcat-total {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .subcat-icon-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 14px;
+      opacity: 0.7;
+      padding: 4px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .subcat-icon-btn:hover {
+      opacity: 1;
+      background: var(--bg-tertiary);
+      color: var(--color-sat);
+    }
+
+    .subcat-icon-btn.danger:hover {
+      color: var(--color-danger);
+    }
+
+    .subcat-empty {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .asset-row {
+      display: grid;
+      grid-template-columns: 18px 1fr 2fr 44px 0.9fr 28px;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 12px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      border: 1px solid var(--border-primary);
+      transition: all 0.2s;
+    }
+
+    .asset-row:hover {
+      border-color: var(--border-secondary);
+      background: var(--bg-tertiary);
+    }
+
+    .color-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .color-dot:hover {
+      transform: scale(1.2);
+    }
+
+    .label-input,
+    .amount-input {
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--border-secondary);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      outline: none;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .label-input:hover,
+    .amount-input:hover {
+      border-color: var(--color-sat);
+    }
+
+    .label-input:focus,
+    .amount-input:focus {
+      border-color: var(--color-sat);
+      background: var(--bg-tertiary);
+    }
+
+    .label-input {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .amount-input {
+      width: 100%;
+      min-width: 0;
+      text-align: right;
+    }
+
+    .pct-badge {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: right;
+      min-width: 40px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      min-width: 0;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border-primary);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--color-sat);
+      cursor: pointer;
+      box-shadow: var(--range-thumb-shadow);
+      transition: all 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: var(--range-thumb-shadow-hover);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--color-sat);
+      cursor: pointer;
+      border: none;
+      box-shadow: var(--range-thumb-shadow);
+      transition: all 0.2s;
+    }
+
+    input[type="range"]::-moz-range-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .del-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 16px;
+      opacity: 0.6;
+      transition: all 0.2s;
+      padding: 4px;
+    }
+
+    .del-btn:hover {
+      color: var(--color-danger);
+      opacity: 1;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1.5rem 0.75rem;
+      }
+
+      .card {
+        padding: 1rem;
+      }
+
+      .asset-row {
+        grid-template-columns: 18px 1fr 1fr minmax(28px, max-content);
+        grid-template-areas:
+          "dot label amount del"
+          "slider slider slider pct";
+        row-gap: 6px;
+      }
+
+      .asset-row .color-dot {
+        grid-area: dot;
+      }
+
+      .asset-row .label-input {
+        grid-area: label;
+      }
+
+      .asset-row .amount-input {
+        grid-area: amount;
+      }
+
+      .asset-row .del-btn {
+        grid-area: del;
+      }
+
+      .asset-row input[type="range"] {
+        grid-area: slider;
+      }
+
+      .asset-row .pct-badge {
+        grid-area: pct;
+        align-self: center;
+      }
+
+      .budget-row {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">Portfolio Calculator</h1>
+      <button class="theme-toggle" id="themeToggle">
+        <i class="ti ti-moon" id="themeIcon"></i>
+        <span id="themeText">Dark</span>
+      </button>
+    </div>
+
+    <div class="grid-2">
+      <!-- LEFT: Chart & Summary -->
+      <div class="card">
+        <div class="section-title">Portfolio summary</div>
+        
+        <div class="budget-row">
+          <span class="budget-label">฿/month</span>
+          <input class="budget-input" type="number" id="budget" value="100000" min="0" step="1000" />
+        </div>
+
+        <div class="budget-row">
+          <span class="budget-label">Slider max</span>
+          <input class="budget-input slidercap-input" type="number" id="sliderCap" value="70" min="5" max="100" step="5" />
+          <span class="budget-label">% ของเงินทั้งหมด</span>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-label">Core allocation</div>
+            <div class="metric-value" style="color: var(--color-core);" id="m-core-pct">40%</div>
+            <div class="metric-subvalue" id="m-core-thb">฿40,000</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Satellite allocation</div>
+            <div class="metric-value" style="color: var(--color-sat);" id="m-sat-pct">60%</div>
+            <div class="metric-subvalue" id="m-sat-thb">฿60,000</div>
+          </div>
+        </div>
+
+        <div class="progress-bar"><div class="progress-fill" id="bar-c" style="width: 40%;"></div></div>
+        <div class="progress-labels">
+          <span id="lbl-c">Core 40%</span>
+          <span id="lbl-s">Satellite 60%</span>
+        </div>
+
+        <div class="donut-wrapper">
+          <canvas id="donut" width="200" height="200"></canvas>
+          <div class="donut-center">
+            <div class="donut-percent" id="total-pct">100%</div>
+            <div class="donut-label">Total</div>
+          </div>
+        </div>
+
+        <div class="legend-grid" id="legend"></div>
+
+        <div id="cat-legend-wrap" style="display:none; margin-top: 0.75rem;">
+          <div class="section-title" style="margin-bottom: 0.5rem;">Subcategories</div>
+          <div class="legend-grid" id="cat-legend"></div>
+        </div>
+
+        <div class="status-bar status-ok" id="warn">รวม 100% พอดี</div>
+      </div>
+
+      <!-- RIGHT: Asset Inputs -->
+      <div class="card">
+        <div class="section-header">
+          <span class="section-title">Core holdings</span>
+          <div class="header-actions">
+            <button class="add-btn" onclick="addCategory('core')"><i class="ti ti-category-plus"></i> Category</button>
+            <button class="add-btn" onclick="addRow('core')"><i class="ti ti-plus"></i> Add</button>
+          </div>
+        </div>
+        <div class="asset-rows" id="core-rows"></div>
+
+        <div class="divider"></div>
+
+        <div class="section-header">
+          <span class="section-title">Satellite plays</span>
+          <div class="header-actions">
+            <button class="add-btn" onclick="addCategory('sat')"><i class="ti ti-category-plus"></i> Category</button>
+            <button class="add-btn" onclick="addRow('sat')"><i class="ti ti-plus"></i> Add</button>
+          </div>
+        </div>
+        <div class="asset-rows" id="sat-rows"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const themeText = document.getElementById('themeText');
+    const themeIcon = document.getElementById('themeIcon');
+    const htmlElement = document.documentElement;
+
+    function updateThemeDisplay() {
+      const isDark = htmlElement.getAttribute('data-theme') === 'dark';
+      themeText.textContent = isDark ? 'Light' : 'Dark';
+      themeIcon.className = isDark ? 'ti ti-sun' : 'ti ti-moon';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const next = htmlElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      htmlElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      updateThemeDisplay();
+    });
+
+    updateThemeDisplay();
+
+    // Portfolio calculator
+    const PALETTE = ['#1D9E75', '#B4B2A9', '#EF9F27', '#378ADD', '#85B7EB', '#7F77DD', '#D85A30', '#5DCAA5', '#E24B4A', '#BA7517', '#639922', '#D4537E'];
+    let uid = 0;
+    let subUid = 0;
+    let sliderCapPct = 70;
+    let subcats = [
+      { id: subUid++, group: 'core', label: 'ETF', color: '#BA7517' },
+      { id: subUid++, group: 'sat', label: 'CRYPTO', color: '#639922' },
+      { id: subUid++, group: 'sat', label: 'US STOCK', color: '#D4537E' },
+      { id: subUid++, group: 'sat', label: 'TH STOCK', color: '#1D9E75' },
+    ];
+    let rows = [
+      { id: uid++, label: 'VT', group: 'core', subId: 0, amt: 35000, color: '#1D9E75' },
+      { id: uid++, label: 'SGOV', group: 'core', subId: 0, amt: 5000, color: '#B4B2A9' },
+      { id: uid++, label: 'BTC', group: 'sat', subId: 1, amt: 15000, color: '#EF9F27' },
+      { id: uid++, label: 'TSMC', group: 'sat', subId: 2, amt: 7000, color: '#378ADD' },
+      { id: uid++, label: 'GOOG', group: 'sat', subId: 2, amt: 7000, color: '#85B7EB' },
+      { id: uid++, label: 'LLY', group: 'sat', subId: 2, amt: 7000, color: '#7F77DD' },
+      { id: uid++, label: 'RKLB', group: 'sat', subId: 2, amt: 7000, color: '#D85A30' },
+      { id: uid++, label: 'PG', group: 'sat', subId: 2, amt: 7000, color: '#5DCAA5' },
+      { id: uid++, label: 'SCB', group: 'sat', subId: 3, amt: 10000, color: '#E24B4A' },
+    ];
+
+    function getBudget() { return Math.max(1, parseFloat(document.getElementById('budget').value) || 1); }
+    function totalAmt() { return rows.reduce((s, r) => s + r.amt, 0); }
+    function toPct(amt) { const b = getBudget(); return b > 0 ? +(amt / b * 100).toFixed(1) : 0; }
+    function fmtPct(p) { return p % 1 === 0 ? p + '%' : p.toFixed(1) + '%'; }
+    function fmtThb(n) { return '฿' + Math.round(n).toLocaleString(); }
+    function nextColor() {
+      const used = rows.map(r => r.color).concat(subcats.map(s => s.color));
+      return PALETTE.find(c => !used.includes(c)) || PALETTE[(uid + subUid) % PALETTE.length];
+    }
+    function getSliderMax(amt) {
+      return Math.max(getBudget() * sliderCapPct / 100, amt || 0, 1);
+    }
+
+    let chart = null;
+    function buildDonut() {
+      if (chart) chart.destroy();
+      chart = new Chart(document.getElementById('donut'), {
+        type: 'doughnut',
+        data: {
+          labels: rows.map(r => r.label),
+          datasets: [{
+            data: rows.map(r => r.amt),
+            backgroundColor: rows.map(r => r.color),
+            borderWidth: 0,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: false,
+          cutout: '65%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => {
+                  const pct = toPct(ctx.parsed);
+                  return ' ' + ctx.label + ': ' + fmtThb(ctx.parsed) + ' (' + fmtPct(pct) + ')';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function buildAssetRow(r) {
+      const pct = toPct(r.amt);
+      const div = document.createElement('div');
+      div.className = 'asset-row';
+      div.id = 'row-' + r.id;
+      div.innerHTML = `
+        <span class="color-dot" style="background:${r.color};"></span>
+        <input class="label-input" type="text" value="${r.label}" maxlength="12" id="lbl-${r.id}" placeholder="Label" />
+        <input type="range" min="0" max="${getSliderMax(r.amt)}" step="50" value="${r.amt}" id="sl-${r.id}" />
+        <span class="pct-badge" id="pct-${r.id}">${fmtPct(pct)}</span>
+        <input class="amount-input" type="number" min="0" step="100" value="${r.amt}" id="amt-${r.id}" />
+        <button class="del-btn" onclick="delRow(${r.id})"><i class="ti ti-trash"></i></button>
+      `;
+
+      div.querySelector('#lbl-' + r.id).addEventListener('input', e => { r.label = e.target.value || '—'; refresh(); });
+
+      div.querySelector('#sl-' + r.id).addEventListener('input', e => {
+        r.amt = parseFloat(e.target.value) || 0;
+        const inp = div.querySelector('#amt-' + r.id);
+        if (document.activeElement !== inp) inp.value = r.amt;
+        div.querySelector('#pct-' + r.id).textContent = fmtPct(toPct(r.amt));
+        refresh();
+      });
+
+      div.querySelector('#amt-' + r.id).addEventListener('input', e => {
+        r.amt = Math.max(0, parseFloat(e.target.value) || 0);
+        const sl = div.querySelector('#sl-' + r.id);
+        sl.max = getSliderMax(r.amt);
+        sl.value = r.amt;
+        div.querySelector('#pct-' + r.id).textContent = fmtPct(toPct(r.amt));
+        refresh();
+      });
+
+      return div;
+    }
+
+    function buildSubcatBlock(sub) {
+      const block = document.createElement('div');
+      block.className = 'subcat-block';
+
+      const header = document.createElement('div');
+      header.className = 'subcat-header';
+      header.innerHTML = `
+        <span class="subcat-color" style="background:${sub.color};"></span>
+        <input class="subcat-label" type="text" value="${sub.label}" maxlength="20" id="subcat-lbl-${sub.id}" placeholder="ชื่อหมวดหมู่" />
+        <span class="subcat-total" id="subcat-total-${sub.id}"></span>
+        <button class="subcat-icon-btn" title="เพิ่มรายการ" onclick="addRow('${sub.group}', ${sub.id})"><i class="ti ti-plus"></i></button>
+        <button class="subcat-icon-btn danger" title="ลบหมวดหมู่" onclick="delCategory(${sub.id})"><i class="ti ti-trash"></i></button>
+      `;
+      header.querySelector('#subcat-lbl-' + sub.id).addEventListener('input', e => {
+        sub.label = e.target.value || 'หมวดใหม่';
+        refresh();
+      });
+      block.appendChild(header);
+
+      const subRows = document.createElement('div');
+      subRows.className = 'asset-rows';
+      const myRows = rows.filter(r => r.subId === sub.id);
+      if (myRows.length === 0) {
+        subRows.innerHTML = '<div class="subcat-empty">ยังไม่มีรายการ — กด + เพื่อเพิ่ม</div>';
+      } else {
+        myRows.forEach(r => subRows.appendChild(buildAssetRow(r)));
+      }
+      block.appendChild(subRows);
+
+      return block;
+    }
+
+    function renderRows() {
+      ['core', 'sat'].forEach(g => {
+        const el = document.getElementById(g + '-rows');
+        el.innerHTML = '';
+        rows.filter(r => r.group === g && r.subId == null).forEach(r => el.appendChild(buildAssetRow(r)));
+        subcats.filter(s => s.group === g).forEach(s => el.appendChild(buildSubcatBlock(s)));
+      });
+    }
+
+    function updateCatLegend() {
+      const wrap = document.getElementById('cat-legend-wrap');
+      if (subcats.length === 0) {
+        wrap.style.display = 'none';
+        return;
+      }
+      wrap.style.display = '';
+      document.getElementById('cat-legend').innerHTML = subcats.map(s => {
+        const amt = rows.filter(r => r.subId === s.id).reduce((sum, r) => sum + r.amt, 0);
+        return `<div class="legend-item"><span class="legend-dot" style="background:${s.color};"></span><span class="legend-text">${s.label} <strong>${fmtPct(toPct(amt))}</strong></span></div>`;
+      }).join('');
+    }
+
+    function refresh() {
+      const budget = getBudget();
+      const total = totalAmt();
+      const coreAmt = rows.filter(r => r.group === 'core').reduce((s, r) => s + r.amt, 0);
+      const satAmt = total - coreAmt;
+      const corePct = toPct(coreAmt);
+      const satPct = toPct(satAmt);
+      const totalPct = toPct(total);
+
+      rows.forEach(r => {
+        const p = document.getElementById('pct-' + r.id);
+        const s = document.getElementById('sl-' + r.id);
+        const a = document.getElementById('amt-' + r.id);
+        if (p) p.textContent = fmtPct(toPct(r.amt));
+        if (s) { s.max = getSliderMax(r.amt); if (document.activeElement !== s) s.value = r.amt; }
+        if (a && document.activeElement !== a) a.value = r.amt;
+      });
+
+      subcats.forEach(sub => {
+        const t = document.getElementById('subcat-total-' + sub.id);
+        if (t) {
+          const subAmt = rows.filter(r => r.subId === sub.id).reduce((s, r) => s + r.amt, 0);
+          t.textContent = fmtThb(subAmt) + ' · ' + fmtPct(toPct(subAmt));
+        }
+      });
+
+      document.getElementById('m-core-pct').textContent = fmtPct(corePct);
+      document.getElementById('m-core-thb').textContent = fmtThb(coreAmt);
+      document.getElementById('m-sat-pct').textContent = fmtPct(satPct);
+      document.getElementById('m-sat-thb').textContent = fmtThb(satAmt);
+      document.getElementById('total-pct').textContent = fmtPct(totalPct);
+
+      const cw = Math.min(Math.max(coreAmt / budget * 100, 0), 100);
+      document.getElementById('bar-c').style.width = cw + '%';
+      document.getElementById('lbl-c').textContent = 'Core ' + fmtPct(corePct);
+      document.getElementById('lbl-s').textContent = 'Satellite ' + fmtPct(satPct);
+
+      const diff = Math.round(total - budget);
+      const w = document.getElementById('warn');
+      if (Math.abs(diff) > 0) {
+        w.className = 'status-bar status-warn';
+        w.textContent = diff > 0 ? 'รวม ' + fmtThb(total) + ' — เกิน ' + fmtThb(diff) : 'รวม ' + fmtThb(total) + ' — ขาด ' + fmtThb(Math.abs(diff));
+      } else {
+        w.className = 'status-bar status-ok';
+        w.textContent = 'รวม ' + fmtThb(total) + ' พอดี (' + fmtPct(totalPct) + ')';
+      }
+
+      if (chart) {
+        chart.data.labels = rows.map(r => r.label);
+        chart.data.datasets[0].data = rows.map(r => r.amt);
+        chart.data.datasets[0].backgroundColor = rows.map(r => r.color);
+        chart.update('none');
+      }
+
+      document.getElementById('legend').innerHTML = rows.map(r =>
+        `<div class="legend-item"><span class="legend-dot" style="background:${r.color};"></span><span class="legend-text">${r.label} <strong>${fmtPct(toPct(r.amt))}</strong></span></div>`
+      ).join('');
+
+      updateCatLegend();
+    }
+
+    function addRow(group, subId = null) {
+      rows.push({ id: uid++, label: 'Asset', group, subId, amt: 0, color: nextColor() });
+      renderRows();
+      refresh();
+    }
+
+    function delRow(id) {
+      if (rows.length <= 1) return;
+      rows = rows.filter(r => r.id !== id);
+      renderRows();
+      refresh();
+    }
+
+    function addCategory(group) {
+      const id = subUid++;
+      subcats.push({ id, group, label: 'หมวดใหม่', color: nextColor() });
+      renderRows();
+      refresh();
+      const inp = document.getElementById('subcat-lbl-' + id);
+      if (inp) { inp.focus(); inp.select(); }
+    }
+
+    function delCategory(id) {
+      rows.forEach(r => { if (r.subId === id) r.subId = null; });
+      subcats = subcats.filter(s => s.id !== id);
+      renderRows();
+      refresh();
+    }
+
+    buildDonut();
+    renderRows();
+    refresh();
+
+    document.getElementById('budget').addEventListener('input', () => { renderRows(); refresh(); });
+    document.getElementById('sliderCap').addEventListener('input', e => {
+      let v = parseFloat(e.target.value);
+      if (isNaN(v)) v = 70;
+      sliderCapPct = Math.min(100, Math.max(5, v));
+      renderRows();
+      refresh();
+    });
+  </script>
+</body>
+</html>
