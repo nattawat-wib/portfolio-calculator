@@ -981,7 +981,7 @@
     }
 
     function delCategory(id) {
-      rows.forEach(r => { if (r.subId === id) r.subId = null; });
+      rows = rows.filter(r => r.subId !== id);
       subcats = subcats.filter(s => s.id !== id);
       renderRows();
       refresh();
