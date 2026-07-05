@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
   <div class="container">
@@ -15,6 +16,38 @@
       <h1>Oxford 3000</h1>
       <p class="subtitle">Flashcard Practice</p>
     </header>
+
+    <div class="top-bar">
+      <div class="stats">
+        <span id="cardCount">0 / 0</span>
+        <span class="stat-separator">|</span>
+        <span>Known: <span id="knownCount">0</span></span>
+      </div>
+      <div class="top-bar-actions">
+        <button class="theme-btn" id="themeBtn"><i class="fa-regular fa-moon"></i></button>
+        <button class="mute-top-btn" id="muteBtn" aria-label="Toggle sound effects"><i class="fa-solid fa-volume-high"></i></button>
+        <button class="menu-btn" id="menuBtn" aria-label="Open settings"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+
+    <div class="desktop-controls" id="desktopControls">
+      <div class="controls">
+        <div class="level-filter">
+          <label>Level:</label>
+          <select id="levelSelect">
+            <option value="all">All Levels</option>
+            <option value="A1">A1 (Beginner)</option>
+            <option value="A2">A2 (Elementary)</option>
+            <option value="B1">B1 (Intermediate)</option>
+            <option value="B2">B2 (Upper Intermediate)</option>
+          </select>
+        </div>
+        <div class="control-buttons">
+          <button id="shuffleBtn" class="btn btn-secondary">Shuffle</button>
+          <button id="resetBtn" class="btn btn-secondary">Reset Progress</button>
+        </div>
+      </div>
+    </div>
 
     <div class="card-wrapper">
       <div class="card" id="flashCard">
@@ -38,6 +71,7 @@
     </div>
 
     <div class="actions">
+      <button class="speak-action-btn" id="speakBtn" aria-label="Listen to pronunciation"><i class="fa-solid fa-volume-high"></i></button>
       <button id="dontKnowBtn" class="btn btn-outline">Don't Know</button>
       <button id="knowBtn" class="btn btn-primary">Know</button>
     </div>
@@ -62,26 +96,32 @@
       </div>
     </div>
 
-    <div class="bottom-controls">
-      <div class="stats">
-        <span id="cardCount">0 / 0</span>
-        <span class="stat-separator">|</span>
-        <span>Known: <span id="knownCount">0</span></span>
-      </div>
-      <div class="controls">
-        <div class="level-filter">
-          <label>Level:</label>
-          <select id="levelSelect">
-            <option value="all">All Levels</option>
-            <option value="A1">A1 (Beginner)</option>
-            <option value="A2">A2 (Elementary)</option>
-            <option value="B1">B1 (Intermediate)</option>
-            <option value="B2">B2 (Upper Intermediate)</option>
-          </select>
+    <div class="side-overlay" id="sideOverlay">
+      <div class="side-panel">
+        <div class="side-header">
+          <span class="side-title">Settings</span>
+          <button class="side-close" id="sideClose"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="control-buttons">
-          <button id="shuffleBtn" class="btn btn-secondary">Shuffle</button>
-          <button id="resetBtn" class="btn btn-secondary">Reset Progress</button>
+        <div class="stats">
+          <span id="sideCardCount">0 / 0</span>
+          <span class="stat-separator">|</span>
+          <span>Known: <span id="sideKnownCount">0</span></span>
+        </div>
+        <div class="controls">
+          <div class="level-filter">
+            <label>Level:</label>
+            <select id="sideLevelSelect">
+              <option value="all">All Levels</option>
+              <option value="A1">A1 (Beginner)</option>
+              <option value="A2">A2 (Elementary)</option>
+              <option value="B1">B1 (Intermediate)</option>
+              <option value="B2">B2 (Upper Intermediate)</option>
+            </select>
+          </div>
+          <div class="control-buttons">
+            <button id="sideShuffleBtn" class="btn btn-secondary">Shuffle</button>
+            <button id="sideResetBtn" class="btn btn-secondary">Reset Progress</button>
+          </div>
         </div>
       </div>
     </div>

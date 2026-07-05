@@ -1,5 +1,9 @@
 const WORDS_KEY = 'oxford-flashcard-progress';
 const DONTKNOW_KEY = 'oxford-dontknow';
+const THEME_KEY = 'oxford-theme';
+const MUTE_KEY = 'oxford-mute';
+
+let muted = false;
 
 let words = [];
 let currentIndex = 0;
@@ -15,6 +19,7 @@ function loadProgress() {
     const saved = localStorage.getItem(DONTKNOW_KEY);
     if (saved) dontKnowWords = JSON.parse(saved);
   } catch {}
+  muted = localStorage.getItem(MUTE_KEY) === 'true';
 }
 
 function saveProgress() {
@@ -23,6 +28,29 @@ function saveProgress() {
 
 function saveDontKnow() {
   localStorage.setItem(DONTKNOW_KEY, JSON.stringify(dontKnowWords));
+}
+
+function loadTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved) {
+    if (saved === 'dark') {
+      document.body.classList.add('dark-mode');
+      document.querySelector('#themeBtn i').className = 'fa-regular fa-sun';
+    }
+    return;
+  }
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (prefersDark) {
+    document.body.classList.add('dark-mode');
+    document.querySelector('#themeBtn i').className = 'fa-regular fa-sun';
+  }
+}
+
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark-mode');
+  const i = document.querySelector('#themeBtn i');
+  i.className = isDark ? 'fa-regular fa-sun' : 'fa-regular fa-moon';
+  localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
 }
 
 function getFilteredWords() {
@@ -188,10 +216,12 @@ function renderCard() {
   const hasWords = pool.length > 0;
   const wrapper = document.querySelector('.card-wrapper');
 
-  document.getElementById('cardCount').textContent =
-    `${unseen.length} / ${pool.length}`;
-  document.getElementById('knownCount').textContent =
-    pool.length - unseen.length;
+  const total = pool.length;
+  const seen = pool.length - unseen.length;
+  document.getElementById('cardCount').textContent = `${unseen.length} / ${total}`;
+  document.getElementById('knownCount').textContent = seen;
+  document.getElementById('sideCardCount').textContent = `${unseen.length} / ${total}`;
+  document.getElementById('sideKnownCount').textContent = seen;
 
   if (!hasWords) {
     wrapper.classList.remove('has-words');
@@ -250,7 +280,34 @@ function markKnown() {
   if (unseen.length === 0) return;
   knownWords.add(unseen[0].word);
   saveProgress();
+  playSound('know');
   nextCard();
+}
+
+function speakWord(word) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(word);
+    u.lang = 'en-US';
+    u.rate = 0.9;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+function playSound(kind) {
+  if (muted) return;
+  try {
+    const audio = new Audio(kind === 'know' ? 'sfx/know.mp3' : 'sfx/wrong.mp3');
+    audio.volume = 0.6;
+    audio.play();
+  } catch {}
+}
+
+function toggleMute() {
+  muted = !muted;
+  localStorage.setItem(MUTE_KEY, muted);
+  document.getElementById('muteBtn').classList.toggle('muted', muted);
+  document.getElementById('muteBtn').innerHTML = muted ? '<i class=\"fa-solid fa-volume-xmark\"></i>' : '<i class=\"fa-solid fa-volume-high\"></i>';
 }
 
 function renderDontKnowList() {
@@ -273,6 +330,7 @@ function markUnknown() {
   }
   knownWords.add(w);
   saveProgress();
+  playSound('dontknow');
   nextCard();
 }
 
@@ -314,6 +372,7 @@ function shuffleWords() {
 function init() {
   words = [...oxfordWords];
   loadProgress();
+  loadTheme();
   for (let i = words.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [words[i], words[j]] = [words[j], words[i]];
@@ -327,11 +386,21 @@ function init() {
 
   document.getElementById('knowBtn').addEventListener('click', markKnown);
   document.getElementById('dontKnowBtn').addEventListener('click', markUnknown);
+  document.getElementById('speakBtn').addEventListener('click', function() {
+    const w = document.getElementById('wordDisplay').textContent;
+    if (w && w !== 'All done!') speakWord(w);
+  });
+  document.getElementById('muteBtn').addEventListener('click', toggleMute);
+  if (muted) {
+    document.getElementById('muteBtn').classList.add('muted');
+    document.getElementById('muteBtn').innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+  }
   document.getElementById('shuffleBtn').addEventListener('click', shuffleWords);
   document.getElementById('resetBtn').addEventListener('click', resetProgress);
   document.getElementById('levelSelect').addEventListener('change', nextCard);
   document.getElementById('resetFromEmptyBtn').addEventListener('click', function() {
     document.getElementById('levelSelect').value = 'all';
+    document.getElementById('sideLevelSelect').value = 'all';
     nextCard();
   });
   document.getElementById('copyBtn').addEventListener('click', copyDontKnow);
@@ -339,6 +408,42 @@ function init() {
   document.getElementById('dontknowToggle').addEventListener('click', function() {
     document.getElementById('dontknowSection').classList.toggle('open');
   });
+
+  // Side menu
+  document.getElementById('menuBtn').addEventListener('click', function() {
+    document.getElementById('sideOverlay').classList.add('open');
+  });
+  document.getElementById('sideClose').addEventListener('click', function() {
+    document.getElementById('sideOverlay').classList.remove('open');
+  });
+  document.getElementById('sideOverlay').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+  // Sync side controls with main controls
+  function syncLevel() {
+    const val = document.getElementById('levelSelect').value;
+    document.getElementById('sideLevelSelect').value = val;
+  }
+  function syncSideLevel() {
+    const val = document.getElementById('sideLevelSelect').value;
+    document.getElementById('levelSelect').value = val;
+    nextCard();
+    document.getElementById('sideOverlay').classList.remove('open');
+  }
+  document.getElementById('levelSelect').addEventListener('change', function() {
+    syncLevel();
+  });
+  document.getElementById('sideLevelSelect').addEventListener('change', syncSideLevel);
+  document.getElementById('sideShuffleBtn').addEventListener('click', function() {
+    shuffleWords();
+    document.getElementById('sideOverlay').classList.remove('open');
+  });
+  document.getElementById('sideResetBtn').addEventListener('click', function() {
+    resetProgress();
+    document.getElementById('sideOverlay').classList.remove('open');
+  });
+  document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+  syncLevel();
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'ArrowRight' || e.key === 'k') {
