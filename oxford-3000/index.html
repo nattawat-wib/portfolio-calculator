@@ -16,44 +16,22 @@
       <p class="subtitle">Flashcard Practice</p>
     </header>
 
-    <div class="controls">
-      <div class="level-filter">
-        <label>Level:</label>
-        <select id="levelSelect">
-          <option value="all">All Levels</option>
-          <option value="A1">A1 (Beginner)</option>
-          <option value="A2">A2 (Elementary)</option>
-          <option value="B1">B1 (Intermediate)</option>
-          <option value="B2">B2 (Upper Intermediate)</option>
-        </select>
-      </div>
-      <div class="control-buttons">
-        <button id="shuffleBtn" class="btn btn-secondary">Shuffle</button>
-        <button id="resetBtn" class="btn btn-secondary">Reset Progress</button>
-      </div>
-    </div>
-
-    <div class="stats">
-      <span id="cardCount">0 / 0</span>
-      <span class="stat-separator">|</span>
-      <span>Known: <span id="knownCount">0</span></span>
-    </div>
-
     <div class="card-wrapper">
       <div class="card" id="flashCard">
         <div class="card-inner">
           <div class="card-front">
             <span class="card-level" id="cardLevel">A1</span>
             <p class="card-word" id="wordDisplay">word</p>
+            <p class="card-pos-front" id="posFrontDisplay"></p>
             <p class="card-hint">Tap or click to flip</p>
           </div>
           <div class="card-back">
             <p class="card-label">Definition</p>
             <p class="card-definition" id="definitionDisplay">definition</p>
-            <p class="card-label thai-label">ภาษาไทย</p>
             <p class="card-thai" id="thaiDisplay">แปลภาษาไทย</p>
             <p class="card-label example-label">Example</p>
             <p class="card-example" id="exampleDisplay">example sentence</p>
+            <p class="card-thai-example" id="thaiExampleDisplay"></p>
           </div>
         </div>
       </div>
@@ -67,6 +45,45 @@
     <div class="empty-state" id="emptyState">
       <p>No cards match the selected level.</p>
       <button id="resetFromEmptyBtn" class="btn btn-secondary">Reset Filter</button>
+    </div>
+
+    <div class="dontknow-section" id="dontknowSection">
+      <div class="dontknow-header" id="dontknowToggle">
+        <span>Don't Know List</span>
+        <span class="dontknow-count" id="dontknowCount">0</span>
+        <span class="dontknow-arrow">▶</span>
+      </div>
+      <div class="dontknow-body" id="dontknowBody">
+        <ul class="dontknow-list" id="dontknowList"></ul>
+        <div class="dontknow-actions">
+          <button id="copyBtn" class="btn btn-secondary">📋 Copy All</button>
+          <button id="clearDontknowBtn" class="btn btn-secondary">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-controls">
+      <div class="stats">
+        <span id="cardCount">0 / 0</span>
+        <span class="stat-separator">|</span>
+        <span>Known: <span id="knownCount">0</span></span>
+      </div>
+      <div class="controls">
+        <div class="level-filter">
+          <label>Level:</label>
+          <select id="levelSelect">
+            <option value="all">All Levels</option>
+            <option value="A1">A1 (Beginner)</option>
+            <option value="A2">A2 (Elementary)</option>
+            <option value="B1">B1 (Intermediate)</option>
+            <option value="B2">B2 (Upper Intermediate)</option>
+          </select>
+        </div>
+        <div class="control-buttons">
+          <button id="shuffleBtn" class="btn btn-secondary">Shuffle</button>
+          <button id="resetBtn" class="btn btn-secondary">Reset Progress</button>
+        </div>
+      </div>
     </div>
   </div>
 
