@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investing News</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSJub25lIi8+CiAgPGVsbGlwc2UgY3g9IjE2IiBjeT0iMTgiIHJ4PSIxMiIgcnk9IjEyIiBmaWxsPSIjRkZENzAwIiBzdHJva2U9IiNFNkI4MDAiIHN0cm9rZS13aWR0aD0iMC41Ii8+CiAgPGVsbGlwc2UgY3g9IjEyIiBjeT0iMTQiIHJ4PSI0IiByeT0iNSIgZmlsbD0iI0ZGRjhEQyIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iMTEiIGN5PSIxNyIgcj0iMS41IiBmaWxsPSIjMzMzIi8+CiAgPGNpcmNsZSBjeD0iMTkiIGN5PSIxNyIgcj0iMS41IiBmaWxsPSIjMzMzIi8+CiAgPHBhdGggZD0iTTEzIDIyIFExNiAyNCAxOSAyMiIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjEuMiIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGVsbGlwc2UgY3g9IjkiIGN5PSIyMCIgcng9IjIiIHJ5PSIxIiBmaWxsPSIjRkY5OTk5IiBvcGFjaXR5PSIwLjUiLz4KICA8ZWxsaXBzZSBjeD0iMjEiIGN5PSIyMCIgcng9IjIiIHJ5PSIxIiBmaWxsPSIjRkY5OTk5IiBvcGFjaXR5PSIwLjUiLz4KICA8Y2lyY2xlIGN4PSIxNiIgY3k9IjEwIiByPSIyIiBmaWxsPSIjRkZENzAwIiBzdHJva2U9IiNFNkI4MDAiIHN0cm9rZS13aWR0aD0iMC41Ii8+CiAgPHBhdGggZD0iTTE0LjUgMTAgUTE2IDggMTcuNSAxMCIgc3Ryb2tlPSIjREFBNTIwIiBzdHJva2Utd2lkdGg9IjAuOCIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=">
+  <style>
+    :root {
+      --bg: #f0f2f5;
+      --bg-card: #fff;
+      --text: #1a1a2e;
+      --text-secondary: #666;
+      --text-muted: #999;
+      --border: #eee;
+      --border-strong: #ddd;
+      --primary: #d97706;
+      --primary-light: #fef8e7;
+      --primary-text: #fff;
+      --tab-bg: #e5e7eb;
+      --tab-active: #d97706;
+      --tab-active-text: #fff;
+      --badge-bg: #f0f2f5;
+      --hover-bg: #fafafa;
+      --shadow: rgba(0,0,0,0.08);
+    }
+
+    body.dark-mode {
+      --bg: #12121e;
+      --bg-card: #1e1e2e;
+      --text: #e0e0e8;
+      --text-secondary: #999;
+      --text-muted: #777;
+      --border: #2a2a3e;
+      --border-strong: #333;
+      --primary: #f59e0b;
+      --primary-light: #2a2a3e;
+      --primary-text: #1a1a2e;
+      --tab-bg: #2a2a3e;
+      --tab-active: #f59e0b;
+      --tab-active-text: #1a1a2e;
+      --badge-bg: #2a2a3e;
+      --hover-bg: #2a2a3e;
+      --shadow: rgba(0,0,0,0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: var(--hover-bg);
+    }
+
+    .translate-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-family: 'Kanit', sans-serif;
+      transition: background 0.2s;
+      letter-spacing: 0.3px;
+    }
+
+    .translate-btn:hover {
+      background: var(--hover-bg);
+    }
+
+    .translate-btn.on {
+      background: var(--primary);
+      color: var(--primary-text);
+      border-color: var(--primary);
+    }
+
+    .top-credit {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .top-credit-back {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .top-credit-back:hover {
+      text-decoration: underline;
+    }
+
+    .top-credit-text a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .top-credit-text a:hover {
+      text-decoration: underline;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 8px 0;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 10px;
+      background: var(--tab-bg);
+      color: var(--text-secondary);
+      cursor: pointer;
+      border: none;
+      font-family: 'Kanit', sans-serif;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .tab:hover {
+      background: var(--hover-bg);
+    }
+
+    .tab.active {
+      background: var(--tab-active);
+      color: var(--tab-active-text);
+    }
+
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .news-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      transition: box-shadow 0.2s;
+    }
+
+    .news-card:hover {
+      box-shadow: 0 4px 16px var(--shadow);
+    }
+
+    .news-source {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--badge-bg);
+      color: var(--text-muted);
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .news-title {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .news-desc {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    .news-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .news-date {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .news-footer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .ticker-chip {
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    .news-link {
+      font-size: 12px;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .news-link:hover {
+      text-decoration: underline;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 48px 16px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .loading i {
+      margin-right: 8px;
+    }
+
+    .error-msg {
+      text-align: center;
+      padding: 48px 16px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .error-msg i {
+      display: block;
+      font-size: 32px;
+      margin-bottom: 12px;
+      color: var(--primary);
+    }
+
+    .error-msg button {
+      margin-top: 12px;
+      background: var(--primary);
+      color: var(--primary-text);
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Kanit', sans-serif;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 16px 12px; }
+      h1 { font-size: 20px; }
+      .tab { font-size: 12px; }
+      .news-title { font-size: 14px; }
+      .news-card { padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Investing News</h1>
+      <div class="header-actions">
+        <button class="translate-btn" id="translateBtn">TH</button>
+        <button class="icon-btn" id="refreshBtn" title="Refresh"><i class="fa-solid fa-rotate"></i></button>
+        <button class="icon-btn" id="themeBtn"><i class="fa-regular fa-moon"></i></button>
+      </div>
+    </div>
+
+    <div class="top-credit">
+      <a href="../" class="top-credit-back">← Back to portal</a>
+      <span class="top-credit-text">made by <a href="https://github.com/nattawat-wib" target="_blank" rel="noopener">nutella_wib</a></span>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="us">US Stocks</button>
+      <button class="tab" data-tab="set">SET / Thailand</button>
+      <button class="tab" data-tab="macro">Macro Economy</button>
+    </div>
+
+    <div class="news-list" id="newsList">
+      <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading news...</div>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    const API_BASE = 'https://actually-free-api.vercel.app/api/news';
+    const LIMIT = 20;
+    let translateMode = false;
+    let currentTab = 'us';
+    let newsCache = {};
+    let translateCache = {};
+
+    const tabConfig = {
+      us: { label: 'US Stocks', params: {} },
+      set: { label: 'SET / Thailand', params: { search: 'bangkok' } },
+      macro: { label: 'Macro Economy', params: { search: 'market' } },
+    };
+
+    const THEME_KEY = 'investing-news-theme';
+
+    function loadTheme() {
+      const saved = localStorage.getItem(THEME_KEY);
+      if (saved === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.querySelector('#themeBtn i').className = 'fa-regular fa-sun';
+      } else if (saved === 'light') {
+        document.body.classList.remove('dark-mode');
+        document.querySelector('#themeBtn i').className = 'fa-regular fa-moon';
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark-mode');
+        document.querySelector('#themeBtn i').className = 'fa-regular fa-sun';
+      }
+    }
+
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle('dark-mode');
+      document.querySelector('#themeBtn i').className = isDark ? 'fa-regular fa-sun' : 'fa-regular fa-moon';
+      localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+    }
+
+    function timeAgo(dateStr) {
+      const now = new Date();
+      const d = new Date(dateStr);
+      const diff = Math.floor((now - d) / 1000);
+      if (diff < 60) return 'just now';
+      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+      if (diff < 2592000) return Math.floor(diff / 86400) + 'd ago';
+      return d.toLocaleDateString();
+    }
+
+    function showLoading() {
+      document.getElementById('newsList').innerHTML = '<div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading news...</div>';
+    }
+
+    function showError(msg) {
+      document.getElementById('newsList').innerHTML = `<div class="error-msg"><i class="fa-regular fa-circle-exclamation"></i>${msg}<br><button onclick="fetchNews()">Try Again</button></div>`;
+    }
+
+    async function translateText(text) {
+      if (!text || text.length > 500) return text;
+      const key = 'en|th:' + text.slice(0, 200);
+      if (translateCache[key]) return translateCache[key];
+      try {
+        const r = await fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text.slice(0, 500)) + '&langpair=en|th');
+        const d = await r.json();
+        const t = d.responseData?.translatedText || text;
+        translateCache[key] = t;
+        return t;
+      } catch {
+        return text;
+      }
+    }
+
+    function renderCard(item) {
+      const card = document.createElement('div');
+      card.className = 'news-card';
+      card.innerHTML = `
+        <div class="news-source">${item.source || 'News'}</div>
+        <div class="news-title">${escapeHtml(item.title || '')}</div>
+        <div class="news-desc">${escapeHtml(item.description || item.content || '')}</div>
+        <div class="news-meta">
+          <div class="news-footer">
+            <span class="news-date">${timeAgo(item.pub_date)}</span>
+            ${(item.tickers || []).filter(Boolean).slice(0, 4).map(t => `<span class="ticker-chip">${escapeHtml(t)}</span>`).join('')}
+          </div>
+          <a class="news-link" href="${escapeHtml(item.link)}" target="_blank" rel="noopener">Read <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px"></i></a>
+        </div>
+      `;
+      if (translateMode) {
+        const titleEl = card.querySelector('.news-title');
+        const descEl = card.querySelector('.news-desc');
+        const origTitle = titleEl.textContent;
+        const origDesc = descEl.textContent;
+        translateText(origTitle).then(t => { if (t !== origTitle) titleEl.textContent = t; });
+        translateText(origDesc).then(t => { if (t !== origDesc) descEl.textContent = t; });
+      }
+      return card;
+    }
+
+    function escapeHtml(s) {
+      if (!s) return '';
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function renderNews(data) {
+      const list = document.getElementById('newsList');
+      if (!data || data.length === 0) {
+        list.innerHTML = '<div class="error-msg"><i class="fa-regular fa-newspaper"></i>No news found for this category.</div>';
+        return;
+      }
+      list.innerHTML = '';
+      data.forEach(item => {
+        list.appendChild(renderCard(item));
+      });
+    }
+
+    async function fetchNews() {
+      const tab = currentTab;
+      const cfg = tabConfig[tab];
+      showLoading();
+
+      if (newsCache[tab]) {
+        renderNews(newsCache[tab]);
+        return;
+      }
+
+      try {
+        const params = new URLSearchParams({ limit: LIMIT, ...cfg.params });
+        const r = await fetch(API_BASE + '?' + params.toString());
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const d = await r.json();
+        const articles = d.data || [];
+        newsCache[tab] = articles;
+        renderNews(articles);
+      } catch (e) {
+        showError('Failed to load news. Please try again.');
+      }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab').forEach(el => {
+        el.classList.toggle('active', el.dataset.tab === tab);
+      });
+      fetchNews();
+    }
+
+    async function toggleTranslate() {
+      translateMode = !translateMode;
+      const btn = document.getElementById('translateBtn');
+      btn.classList.toggle('on', translateMode);
+      btn.textContent = translateMode ? 'EN' : 'TH';
+
+      if (translateMode) {
+        const cards = document.querySelectorAll('.news-card');
+        for (const card of cards) {
+          const titleEl = card.querySelector('.news-title');
+          const descEl = card.querySelector('.news-desc');
+          if (!titleEl.dataset.orig) {
+            titleEl.dataset.orig = titleEl.textContent;
+            descEl.dataset.orig = descEl.textContent;
+          }
+          const newTitle = await translateText(titleEl.dataset.orig);
+          const newDesc = await translateText(descEl.dataset.orig);
+          titleEl.textContent = newTitle;
+          descEl.textContent = newDesc;
+        }
+      } else {
+        document.querySelectorAll('.news-card .news-title, .news-card .news-desc').forEach(el => {
+          if (el.dataset.orig) el.textContent = el.dataset.orig;
+        });
+      }
+    }
+
+    loadTheme();
+
+    document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      newsCache = {};
+      fetchNews();
+    });
+    document.getElementById('translateBtn').addEventListener('click', toggleTranslate);
+
+    document.getElementById('tabs').addEventListener('click', e => {
+      const tab = e.target.closest('.tab');
+      if (tab && tab.dataset.tab) switchTab(tab.dataset.tab);
+    });
+
+    fetchNews();
+    setInterval(() => { newsCache = {}; fetchNews(); }, 300000);
+  </script>
+</body>
+</html>
