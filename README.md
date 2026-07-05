@@ -1,9 +1,21 @@
-# Port Calculator
+# Mini App
 
-มินิแอปที่สร้างจาก **vibe coding** (AI-assisted coding) โดยใช้ Claude ผ่าน Cursor
+A collection of lightweight, single-page web applications built through **vibe coding** — AI-assisted development using Claude.
 
-เป็นการนำ `index.html` มาวางไว้ใน folder `port-calculator` เพื่อจัดระเบียบโปรเจกต์ให้เป็นสัดส่วน
+## Apps
 
-## วิธีใช้งาน
+### Portfolio Calculator
 
-เปิด `index.html` ใน browser โดยตรง
+An interactive portfolio allocation tool based on the Core-Satellite investing strategy. Built with vanilla JavaScript and Chart.js.
+
+- Allocate monthly budgets across core holdings and satellite plays
+- Real-time donut chart visualization
+- Subcategory grouping for organized portfolio management
+- Dark/light theme support
+- Responsive design
+
+Open `portfolio-calculator/index.html` in any browser to use.
+
+---
+
+Built with vibe coding — AI-assisted by Claude.
