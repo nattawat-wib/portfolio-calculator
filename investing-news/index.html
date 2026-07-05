@@ -348,6 +348,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script>
     const API_BASE = 'https://actually-free-api.vercel.app/api/news';
+    const CORS_PROXY = 'https://corsproxy.io/?url=';
     const LIMIT = 20;
     let translateMode = false;
     let currentTab = 'us';
@@ -473,7 +474,7 @@
 
       try {
         const params = new URLSearchParams({ limit: LIMIT, ...cfg.params });
-        const r = await fetch(API_BASE + '?' + params.toString());
+        const r = await fetch(CORS_PROXY + encodeURIComponent(API_BASE + '?' + params.toString()));
         if (!r.ok) throw new Error('HTTP ' + r.status);
         const d = await r.json();
         const articles = d.data || [];
