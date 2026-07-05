@@ -7,8 +7,8 @@
   --border-strong: #ddd;
   --card-bg: #fff;
   --card-shadow: rgba(0, 0, 0, 0.08);
-  --primary: #6c63ff;
-  --primary-hover: #5b52e0;
+  --primary: #d97706;
+  --primary-hover: #b45309;
   --danger: #d32f2f;
   --danger-bg: #fff0f0;
   --overlay-bg: rgba(0, 0, 0, 0.3);
@@ -34,8 +34,8 @@ body.dark-mode {
   --border-strong: #333;
   --card-bg: #1e1e2e;
   --card-shadow: rgba(0, 0, 0, 0.3);
-  --primary: #7c73ff;
-  --primary-hover: #6c63ff;
+  --primary: #f59e0b;
+  --primary-hover: #d97706;
   --danger: #ff5252;
   --danger-bg: #3a1a1a;
   --overlay-bg: rgba(0, 0, 0, 0.6);
@@ -64,8 +64,8 @@ body {
   color: var(--text);
   min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   padding: 16px;
   transition: background 0.3s ease, color 0.3s ease;
 }
@@ -91,20 +91,6 @@ h1 {
   font-size: 14px;
   color: var(--text-secondary);
   margin-top: 2px;
-}
-
-.credit {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.credit a {
-  color: var(--primary);
-  text-decoration: none;
-}
-
-.credit a:hover {
-  text-decoration: underline;
 }
 
 .controls {
@@ -547,6 +533,7 @@ h1 {
   background: var(--card-bg);
   overflow: hidden;
   transition: background 0.3s ease, border 0.3s ease;
+  text-align: left;
 }
 
 .dontknow-header {
@@ -700,4 +687,35 @@ h1 {
     font-size: 15px;
     min-height: 44px;
   }
+}
+
+.app-footer {
+  width: 100%;
+  max-width: 500px;
+  margin-top: 32px;
+  padding: 16px 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+
+.footer-back {
+  display: block;
+  color: var(--primary);
+  text-decoration: none;
+  margin-bottom: 6px;
+}
+
+.footer-back:hover {
+  text-decoration: underline;
+}
+
+.footer-credit a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.footer-credit a:hover {
+  text-decoration: underline;
 }
