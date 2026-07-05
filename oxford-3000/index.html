@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oxford 3000 Flashcards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Oxford 3000</h1>
+      <p class="subtitle">Flashcard Practice</p>
+    </header>
+
+    <div class="controls">
+      <div class="level-filter">
+        <label>Level:</label>
+        <select id="levelSelect">
+          <option value="all">All Levels</option>
+          <option value="A1">A1 (Beginner)</option>
+          <option value="A2">A2 (Elementary)</option>
+          <option value="B1">B1 (Intermediate)</option>
+          <option value="B2">B2 (Upper Intermediate)</option>
+        </select>
+      </div>
+      <div class="control-buttons">
+        <button id="shuffleBtn" class="btn btn-secondary">Shuffle</button>
+        <button id="resetBtn" class="btn btn-secondary">Reset Progress</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <span id="cardCount">0 / 0</span>
+      <span class="stat-separator">|</span>
+      <span>Known: <span id="knownCount">0</span></span>
+    </div>
+
+    <div class="card-wrapper">
+      <div class="card" id="flashCard">
+        <div class="card-inner">
+          <div class="card-front">
+            <span class="card-level" id="cardLevel">A1</span>
+            <p class="card-word" id="wordDisplay">word</p>
+            <p class="card-hint">Tap or click to flip</p>
+          </div>
+          <div class="card-back">
+            <p class="card-label">Definition</p>
+            <p class="card-definition" id="definitionDisplay">definition</p>
+            <p class="card-label thai-label">ภาษาไทย</p>
+            <p class="card-thai" id="thaiDisplay">แปลภาษาไทย</p>
+            <p class="card-label example-label">Example</p>
+            <p class="card-example" id="exampleDisplay">example sentence</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="dontKnowBtn" class="btn btn-outline">Don't Know</button>
+      <button id="knowBtn" class="btn btn-primary">Know</button>
+    </div>
+
+    <div class="empty-state" id="emptyState">
+      <p>No cards match the selected level.</p>
+      <button id="resetFromEmptyBtn" class="btn btn-secondary">Reset Filter</button>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
