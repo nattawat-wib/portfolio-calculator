@@ -1,0 +1,17 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "new-app": {
+      "description": "Scaffolds new mini-apps following the project's conventions (dark/light theme, Kanit font, Font Awesome, responsive design)",
+      "mode": "subagent"
+    },
+    "stylist": {
+      "description": "Helps with consistent styling across all apps using the project's CSS custom properties theming system",
+      "mode": "subagent"
+    },
+    "oxford-editor": {
+      "description": "Specialist for the Oxford 3000 flashcard app — data, logic, and styling",
+      "mode": "subagent"
+    }
+  }
+}
