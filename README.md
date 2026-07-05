@@ -1,21 +1,12 @@
-# Mini App
+# 🧠 Vibe Coding Mini Apps
 
-A collection of lightweight, single-page web applications built through **vibe coding** — AI-assisted development using Claude.
+AI vibe coding 100% · made by [nutella_wib](https://github.com/nattawat-wib)
+
+A portal collecting small web apps built with love and AI assistance.
 
 ## Apps
 
-### Portfolio Calculator
-
-An interactive portfolio allocation tool based on the Core-Satellite investing strategy. Built with vanilla JavaScript and Chart.js.
-
-- Allocate monthly budgets across core holdings and satellite plays
-- Real-time donut chart visualization
-- Subcategory grouping for organized portfolio management
-- Dark/light theme support
-- Responsive design
-
-Open `portfolio-calculator/index.html` in any browser to use.
-
----
-
-Built with vibe coding — AI-assisted by Claude.
+| App | Description |
+|-----|-------------|
+| [OXF3000](./oxford-3000/) | Oxford 3000 flashcard — 3086 words with Thai translations, English definitions, dynamic examples, pronunciation, and Duolingo-style sound effects |
+| [Portfolio Calculator](./portfolio-calculator/) | Core & satellite portfolio tracker with budget allocation, sliders, and interactive donut chart |

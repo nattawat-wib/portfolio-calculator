@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Apps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="https://d35aaqx5ub95lt.cloudfront.net/favicon.ico">
+  <style>
+    :root {
+      --bg: #f0f2f5;
+      --text: #1a1a2e;
+      --text-secondary: #666;
+      --text-muted: #999;
+      --card-bg: #fff;
+      --card-shadow: rgba(0, 0, 0, 0.08);
+      --card-border: #eee;
+      --primary: #6c63ff;
+      --primary-hover: #5b52e0;
+      --border: #ddd;
+      --hover-bg: #fafafa;
+    }
+
+    body.dark-mode {
+      --bg: #12121e;
+      --text: #e0e0e8;
+      --text-secondary: #999;
+      --text-muted: #777;
+      --card-bg: #1e1e2e;
+      --card-shadow: rgba(0, 0, 0, 0.3);
+      --card-border: #2a2a3e;
+      --primary: #7c73ff;
+      --primary-hover: #6c63ff;
+      --border: #333;
+      --hover-bg: #2a2a3e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Kanit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .theme-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .theme-btn:hover {
+      background: var(--hover-bg);
+    }
+
+    .apps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .app-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 24px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px var(--card-shadow);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .app-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 32px var(--card-shadow);
+    }
+
+    .app-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .app-icon.oxford {
+      background: #6c63ff;
+      color: #fff;
+    }
+
+    .app-icon.portfolio {
+      background: #10b981;
+      color: #fff;
+    }
+
+    .app-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .app-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .app-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .app-arrow {
+      font-size: 18px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    footer {
+      margin-top: 48px;
+      text-align: center;
+    }
+
+    .credit {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .credit a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .credit a:hover {
+      text-decoration: underline;
+    }
+
+    .vibe-badge {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--card-bg);
+      border: 1px solid var(--primary);
+      border-radius: 20px;
+      padding: 6px 18px;
+      margin: 0 auto 24px;
+      width: fit-content;
+      letter-spacing: 0.3px;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 20px 12px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .app-card {
+        padding: 16px;
+        gap: 14px;
+      }
+
+      .app-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+        border-radius: 10px;
+      }
+
+      .app-name {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Mini Apps</h1>
+      <button class="theme-btn" id="themeBtn"><i class="fa-regular fa-moon"></i></button>
+    </header>
+
+    <div class="vibe-badge">AI vibe coding 100%</div>
+
+    <div class="apps">
+      <a class="app-card" href="oxford-3000/">
+        <div class="app-icon oxford">OX</div>
+        <div class="app-info">
+          <div class="app-name">OXF3000</div>
+          <div class="app-desc">Oxford 3000 flashcard · 3086 words with Thai, definitions & pronunciation</div>
+        </div>
+        <div class="app-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+
+      <a class="app-card" href="portfolio-calculator/">
+        <div class="app-icon portfolio">$</div>
+        <div class="app-info">
+          <div class="app-name">Portfolio Calculator</div>
+          <div class="app-desc">Track core & satellite holdings, budget allocation & donut chart</div>
+        </div>
+        <div class="app-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+    </div>
+
+    <footer>
+      <p class="credit">made by <a href="https://github.com/nattawat-wib" target="_blank" rel="noopener">nutella_wib</a></p>
+    </footer>
+  </div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    const THEME_KEY = 'portal-theme';
+
+    function loadTheme() {
+      const saved = localStorage.getItem(THEME_KEY);
+      if (saved) {
+        if (saved === 'dark') {
+          document.body.classList.add('dark-mode');
+          document.querySelector('#themeBtn i').className = 'fa-regular fa-sun';
+        }
+        return;
+      }
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark-mode');
+        document.querySelector('#themeBtn i').className = 'fa-regular fa-sun';
+      }
+    }
+
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle('dark-mode');
+      const i = document.querySelector('#themeBtn i');
+      i.className = isDark ? 'fa-regular fa-sun' : 'fa-regular fa-moon';
+      localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+    }
+
+    loadTheme();
+    document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+  </script>
+</body>
+</html>
