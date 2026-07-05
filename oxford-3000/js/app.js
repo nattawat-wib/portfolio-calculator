@@ -10,6 +10,8 @@ let currentIndex = 0;
 let knownWords = new Set();
 let dontKnowWords = [];
 
+let audioKnow, audioWrong, audioFlip;
+
 function loadProgress() {
   try {
     const saved = localStorage.getItem(WORDS_KEY);
@@ -297,9 +299,17 @@ function speakWord(word) {
 function playSound(kind) {
   if (muted) return;
   try {
-    const audio = new Audio(kind === 'know' ? 'sfx/know.mp3' : 'sfx/wrong.mp3');
-    audio.volume = 0.6;
-    audio.play();
+    const a = kind === 'know' ? audioKnow : audioWrong;
+    a.currentTime = 0;
+    a.play();
+  } catch {}
+}
+
+function flipSound() {
+  if (muted) return;
+  try {
+    audioFlip.currentTime = 0;
+    audioFlip.play();
   } catch {}
 }
 
@@ -371,6 +381,15 @@ function shuffleWords() {
 
 function init() {
   words = [...oxfordWords];
+
+  // Preload audio
+  audioKnow = new Audio('sfx/know.mp3');
+  audioWrong = new Audio('sfx/wrong.mp3');
+  audioKnow.volume = 0.6;
+  audioWrong.volume = 0.6;
+  audioFlip = new Audio('sfx/flip.wav');
+  audioFlip.volume = 0.5;
+
   loadProgress();
   loadTheme();
   for (let i = words.length - 1; i > 0; i--) {
@@ -380,7 +399,9 @@ function init() {
 
   document.getElementById('flashCard').addEventListener('click', function(e) {
     if (e.target.closest('.card-inner')) {
+      const wasFlipped = this.classList.contains('flipped');
       this.classList.toggle('flipped');
+      if (!wasFlipped) flipSound();
     }
   });
 
@@ -455,7 +476,11 @@ function init() {
     } else if (e.key === ' ') {
       e.preventDefault();
       const card = document.getElementById('flashCard');
-      if (!document.getElementById('knowBtn').disabled) card.classList.toggle('flipped');
+      if (!document.getElementById('knowBtn').disabled) {
+        const wasFlipped = card.classList.contains('flipped');
+        card.classList.toggle('flipped');
+        if (!wasFlipped) flipSound();
+      }
     }
   });
 

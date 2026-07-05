@@ -689,33 +689,31 @@ h1 {
   }
 }
 
-.app-footer {
+.top-credit {
   width: 100%;
   max-width: 500px;
-  margin-top: 32px;
-  padding: 16px 0;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0 4px;
   font-size: 12px;
   color: var(--text-muted);
-  border-top: 1px solid var(--border);
 }
 
-.footer-back {
-  display: block;
+.top-credit-back {
   color: var(--primary);
   text-decoration: none;
-  margin-bottom: 6px;
 }
 
-.footer-back:hover {
+.top-credit-back:hover {
   text-decoration: underline;
 }
 
-.footer-credit a {
+.top-credit-text a {
   color: var(--primary);
   text-decoration: none;
 }
 
-.footer-credit a:hover {
+.top-credit-text a:hover {
   text-decoration: underline;
 }
