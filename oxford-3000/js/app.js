@@ -64,6 +64,60 @@ function getUnseenWords(pool) {
   return pool.filter(w => !knownWords.has(w.word));
 }
 
+// --- API-based sentence generation ---
+
+const _sentCache = {}
+const _transCache = {}
+
+async function _fetchDictExample(word) {
+  if (word in _sentCache) return _sentCache[word]
+  try {
+    const r = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`)
+    if (!r.ok) { _sentCache[word] = null; return null }
+    const data = await r.json()
+    if (!data?.[0]) { _sentCache[word] = null; return null }
+    for (const m of data[0].meanings || []) {
+      for (const d of m.definitions || []) {
+        if (d.example) {
+          _sentCache[word] = d.example
+          return d.example
+        }
+      }
+    }
+  } catch {}
+  _sentCache[word] = null
+  return null
+}
+
+async function _translate(text) {
+  const key = text.slice(0, 100)
+  if (_transCache[key]) return _transCache[key]
+  try {
+    const r = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.slice(0, 500))}&langpair=en|th`)
+    if (!r.ok) return null
+    const d = await r.json()
+    const t = d.responseData?.translatedText
+    if (t) _transCache[key] = t
+    return t || null
+  } catch { return null }
+}
+
+let _reqId = 0
+
+async function _fetchBetterExample(word, thai) {
+  const id = ++_reqId
+  const en = await _fetchDictExample(word)
+  if (!en || id !== _reqId) return
+  let th = thai
+  const t = await _translate(en)
+  if (id !== _reqId) return
+  if (t) th = t
+  const exEl = document.getElementById('exampleDisplay')
+  const thExEl = document.getElementById('thaiExampleDisplay')
+  if (exEl && exEl.textContent !== en) exEl.textContent = en
+  if (thExEl && thExEl.textContent !== th) thExEl.textContent = th
+}
+
 function inferPos(word, definition) {
   const d = definition.trim()
   const w = word.trim()
@@ -81,9 +135,13 @@ function aOrAn(word) {
   return /^[aeiou]/i.test(word) ? 'an' : 'a'
 }
 
+function capFirst(word) {
+  return word.charAt(0).toUpperCase() + word.slice(1)
+}
+
 function generateExample(word, thai, definition) {
   const pos = inferPos(word, definition)
-  const cap = word.charAt(0).toUpperCase() + word.slice(1)
+  const cap = capFirst(word)
   const art = aOrAn(word)
 
   const patterns = {
@@ -97,6 +155,10 @@ function generateExample(word, thai, definition) {
         `We need to ${word} carefully.`,
         `I try to ${word} every morning.`,
         `The team will ${word} tomorrow.`,
+        `She ${word}s better than anyone else.`,
+        `Did you ${word} yet?`,
+        `He is learning to ${word} this year.`,
+        `They plan to ${word} next month.`,
       ],
       th: [
         `คุณควร${thai}บ่อยขึ้น`,
@@ -107,6 +169,10 @@ function generateExample(word, thai, definition) {
         `เราต้อง${thai}อย่างระมัดระวัง`,
         `ฉันพยายาม${thai}ทุกเช้า`,
         `ทีมจะ${thai}พรุ่งนี้`,
+        `เธอ${thai}เก่งกว่าคนอื่น`,
+        `คุณ${thai}หรือยัง`,
+        `ปีนี้เขาเรียนที่จะ${thai}`,
+        `พวกเขาวางแผนที่จะ${thai}เดือนหน้า`,
       ],
     },
     noun: {
@@ -119,6 +185,10 @@ function generateExample(word, thai, definition) {
         `He showed me the ${word}.`,
         `That ${word} is very useful.`,
         `Do you have ${aOrAn(word)} ${word}?`,
+        `The ${word} is on the table.`,
+        `I need a ${word} right now.`,
+        `Where did you put the ${word}?`,
+        `There is a ${word} in the room.`,
       ],
       th: [
         `นี่คือ${thai}ที่สำคัญ`,
@@ -129,24 +199,34 @@ function generateExample(word, thai, definition) {
         `เขาให้ฉันดู${thai}`,
         `${thai}นั้นมีประโยชน์มาก`,
         `คุณมี${thai}ไหม`,
+        `${thai}อยู่บนโต๊ะ`,
+        `ตอนนี้ฉันต้องการ${thai}`,
+        `คุณวาง${thai}ไว้ที่ไหน`,
+        `มี${thai}อยู่ในห้อง`,
       ],
     },
     adjective: {
       en: [
-        `This is a very ${word} experience.`,
-        `She is ${word} and talented.`,
-        `The weather feels ${word} today.`,
-        `That was ${aOrAn(word)} ${word} thing to do.`,
-        `He seems ${word} about the news.`,
-        `It's ${word} to see you happy.`,
+        `She is very ${word}.`,
+        `That's a ${word} idea.`,
+        `The view is absolutely ${word}.`,
+        `He seems ${word} today.`,
+        `It was a ${word} experience.`,
+        `They live in a ${word} neighborhood.`,
+        `This is ${word} than I expected.`,
+        `I feel ${word} about the result.`,
+        `The weather is ${word} today.`,
       ],
       th: [
-        `นี่คือประสบการณ์ที่${thai}มาก`,
-        `เธอ${thai}และมีความสามารถ`,
-        `อากาศวันนี้รู้สึก${thai}`,
-        `นั่นเป็นการกระทำที่${thai}`,
-        `เขาดู${thai}เกี่ยวกับข่าวนี้`,
-        `มัน${thai}ที่เห็นคุณมีความสุข`,
+        `เธอ${thai}มาก`,
+        `นั่นเป็นความคิดที่${thai}`,
+        `วิว${thai}อย่างเหลือเชื่อ`,
+        `วันนี้เขาดู${thai}`,
+        `มันเป็นประสบการณ์ที่${thai}`,
+        `พวกเขาอยู่ในละแวกที่${thai}`,
+        `นี่${thai}กว่าที่ฉันคาดไว้`,
+        `ฉันรู้สึก${thai}เกี่ยวกับผลลัพธ์`,
+        `วันนี้อากาศ${thai}`,
       ],
     },
     adverb: {
@@ -157,6 +237,9 @@ function generateExample(word, thai, definition) {
         `She ${word} walked into the room.`,
         `He ${word} answered the question.`,
         `They ${word} completed the project.`,
+        `Please drive ${word}.`,
+        `She ${word} opened the door.`,
+        `He ${word} explained the problem.`,
       ],
       th: [
         `เธอพูด${thai}กับผู้ฟัง`,
@@ -165,6 +248,9 @@ function generateExample(word, thai, definition) {
         `เธอ${thai}เดินเข้าไปในห้อง`,
         `เขา${thai}ตอบคำถาม`,
         `พวกเขา${thai}ทำโครงการเสร็จ`,
+        `กรุณาขับรถ${thai}`,
+        `เธอ${thai}เปิดประตู`,
+        `เขา${thai}อธิบายปัญหา`,
       ],
     },
     function: {
@@ -172,21 +258,27 @@ function generateExample(word, thai, definition) {
         `"${cap}" is a very common word in English.`,
         `Do you know how to use "${word}"?`,
         `Please use "${word}" in a sentence.`,
+        `"${word}" can connect ideas in a sentence.`,
+        `Understanding "${word}" helps with fluency.`,
       ],
       th: [
         `"${cap}" เป็นคำที่พบบ่อยมากในภาษาอังกฤษ`,
         `คุณรู้วิธีใช้ "${word}" ไหม`,
         `กรุณาใช้ "${word}" ในประโยค`,
+        `"${word}" สามารถเชื่อมโยงความคิดในประโยคได้`,
+        `การเข้าใจ "${word}" ช่วยให้คล่องขึ้น`,
       ],
     },
     abbreviation: {
       en: [
-        `The label "${word}" refers to a part of speech.`,
+        `"${cap}" is short for something.`,
         `You can find "${word}" in a dictionary entry.`,
+        `"${word}" is commonly used in writing.`,
       ],
       th: [
-        `"${word}" หมายถึงหน้าที่ของคำในภาษา`,
+        `"${word}" เป็นคำย่อของบางสิ่ง`,
         `คุณสามารถหา "${word}" ได้ในพจนานุกรม`,
+        `"${word}" ใช้บ่อยในการเขียน`,
       ],
     },
     unknown: {
@@ -196,6 +288,7 @@ function generateExample(word, thai, definition) {
         `"${word}" is a common English word.`,
         `Please study the word "${word}".`,
         `${cap} appears in many everyday situations.`,
+        `Do you understand the word "${word}"?`,
       ],
       th: [
         `"${cap}" เป็นคำที่มีประโยชน์`,
@@ -203,6 +296,7 @@ function generateExample(word, thai, definition) {
         `"${word}" เป็นคำศัพท์ภาษาอังกฤษที่พบบ่อย`,
         `กรุณาศึกษาคำว่า "${word}"`,
         `${cap} ปรากฏในสถานการณ์ประจำวันมากมาย`,
+        `คุณเข้าใจคำว่า "${word}" ไหม`,
       ],
     },
   }
@@ -262,6 +356,7 @@ function renderCard() {
   document.getElementById('exampleDisplay').textContent = ex.en;
   document.getElementById('thaiExampleDisplay').textContent = ex.th;
   document.getElementById('cardLevel').textContent = w.level;
+  _fetchBetterExample(w.word, w.thai);
   document.getElementById('cardLevel').style.display = 'block';
   document.getElementById('knowBtn').disabled = false;
   document.getElementById('dontKnowBtn').disabled = false;
